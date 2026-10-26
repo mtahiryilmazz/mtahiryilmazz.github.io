@@ -1,815 +1,590 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark scroll-smooth">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muhammed Tahir Yılmaz | IT Uzmanı & Otomasyon Mimarisi</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        cyber: {
-                            950: '#030712',
-                            900: '#0a0f1d',
-                            800: '#111827',
-                            700: '#1f2937',
-                            cyan: '#00f0ff',
-                            purple: '#a855f7',
-                            emerald: '#10b981',
-                            blue: '#3b82f6'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-8px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #030712;
-            color: #f3f4f6;
-            overflow-x: hidden;
-        }
-        .code-font {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0f1d;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1f2937;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 240, 255, 0.2);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00f0ff;
-        }
-        .cyber-grid {
-            background-image: linear-gradient(to right, rgba(31, 41, 55, 0.2) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(31, 41, 55, 0.2) 1px, transparent 1px);
-            background-size: 36px 36px;
-        }
-        .glass-panel {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-panel:hover {
-            border-color: rgba(0, 240, 255, 0.35);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.12);
-        }
-        .glow-text {
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M. Tahir Yılmaz — Systems Architect, Windows Internals & AI Diagnostics</title>
+  <meta name="description" content="M. Tahir Yılmaz kişisel portfolyosu. Rust, C# .NET, Windows Internals, PowerShell otomasyonları ve yapay zeka sistem ajanları.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-cyber-950 text-gray-100 cyber-grid min-h-screen">
+<body>
+  <!-- Ambient 3D Canvas Background -->
+  <div id="canvas-container" aria-hidden="true"></div>
 
-    <!-- Toast Bildirim Kutusu -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+  <!-- Noise Overlay for Cinematic Texture -->
+  <div class="noise-overlay" aria-hidden="true"></div>
 
-    <!-- Proje Detay Modal (Drawer) -->
-    <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300">
-        <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 sm:p-8 space-y-6 relative border border-cyber-cyan/30 shadow-2xl">
-            <button id="close-modal-btn" class="absolute top-5 right-5 text-gray-400 hover:text-cyber-cyan transition-colors text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="flex items-center gap-3">
-                <span id="modal-badge" class="px-3 py-1 rounded-full text-xs code-font font-semibold bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20">
-                    Otomasyon
-                </span>
-                <span id="modal-status" class="text-xs text-gray-400 code-font">● Tamamlandı</span>
-            </div>
-            <h3 id="modal-title" class="text-2xl sm:text-3xl font-extrabold text-white">Proje Başlığı</h3>
-            <p id="modal-desc" class="text-gray-300 text-sm sm:text-base leading-relaxed">
-                Proje detay açıklaması buraya yüklenecektir.
-            </p>
-            <div class="space-y-2">
-                <h4 class="text-xs code-font text-gray-400 uppercase">Kullanılan Teknolojiler & Araçlar</h4>
-                <div id="modal-tags" class="flex flex-wrap gap-2 pt-1"></div>
-            </div>
-            <div class="pt-4 border-t border-gray-800 flex items-center justify-between">
-                <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-cyber-cyan text-cyber-950 font-bold hover:opacity-90 transition-all flex items-center gap-2 text-sm">
-                    <i class="fa-brands fa-github text-base"></i>
-                    <span>GitHub Depotu</span>
-                </a>
-                <button id="modal-close-bottom" class="text-xs text-gray-400 hover:text-white transition-colors">Pencereyi Kapat</button>
-            </div>
-        </div>
+  <!-- CRT Scanlines Overlay (Toggled via button) -->
+  <div id="crt-overlay" class="crt-overlay" aria-hidden="true"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Command Palette Modal (Ctrl+K) -->
+  <div id="cmd-palette-backdrop" class="cmd-palette-backdrop" aria-hidden="true">
+    <div class="cmd-palette-modal" role="dialog" aria-modal="true" aria-label="Sistem Komut Paleti">
+      <div class="palette-input-wrap">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="palette-search-input" placeholder="Bir proje veya komut arayın... (örn: yapair, rust, clone, terminal)" autocomplete="off" spellcheck="false">
+        <kbd class="kbd-badge">ESC</kbd>
+      </div>
+      <div class="palette-results" id="palette-results">
+        <!-- Results injected dynamically -->
+      </div>
+      <div class="palette-footer">
+        <span><kbd>↑</kbd> <kbd>↓</kbd> Gezin</span>
+        <span><kbd>↵</kbd> Seç</span>
+        <span><kbd>ESC</kbd> Kapat</span>
+      </div>
     </div>
+  </div>
 
-    <!-- Navigasyon Çubuğu -->
-    <header class="fixed top-0 left-0 right-0 z-40 glass-panel border-b border-gray-800/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <a href="#hero" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-cyan via-cyber-blue to-cyber-purple flex items-center justify-center text-cyber-950 font-black text-lg shadow-lg shadow-cyber-cyan/20 group-hover:scale-105 transition-transform">
-                    MTY
-                </div>
-                <div>
-                    <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-gray-200 to-cyber-cyan bg-clip-text text-transparent">Muhammed Tahir Yılmaz</span>
-                    <span class="block text-xs code-font text-cyber-cyan tracking-widest uppercase">IT & Otomasyon Mimarı</span>
-                </div>
-            </a>
+  <!-- Navigation Bar -->
+  <header class="site-header">
+    <nav class="nav-container">
+      <a href="#" class="brand-logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">MTY</span>
+        <span class="logo-bracket">]</span>
+      </a>
 
-            <!-- Masaüstü Linkleri -->
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="#about" class="text-gray-300 hover:text-cyber-cyan transition-colors">Hakkımda</a>
-                <a href="#skills" class="text-gray-300 hover:text-cyber-cyan transition-colors">Uzmanlık Alanları</a>
-                <a href="#projects" class="text-gray-300 hover:text-cyber-cyan transition-colors">Projeler</a>
-                <a href="#experience" class="text-gray-300 hover:text-cyber-cyan transition-colors">Deneyim</a>
-                <a href="#contact" class="px-5 py-2.5 rounded-xl bg-cyber-cyan/10 hover:bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 font-semibold transition-all duration-300 shadow-sm shadow-cyber-cyan/10">İletişime Geç</a>
-            </nav>
+      <div class="nav-links">
+        <a href="#about" class="nav-item">Hakkımda</a>
+        <a href="#projects" class="nav-item">Projeler</a>
+        <a href="#benchmarks" class="nav-item">Benchmark</a>
+        <a href="#terminal" class="nav-item">Canlı Terminal</a>
+        <a href="#stack" class="nav-item">Yetenekler</a>
+      </div>
 
-            <!-- Mobil Menü Butonu -->
-            <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-cyber-cyan p-2 rounded-lg focus:outline-none">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
+      <div class="nav-actions">
+        <!-- CRT Monitor Switcher -->
+        <button id="crt-toggle-btn" class="btn-tool-toggle" title="Retro CRT Monitör Efektini Aç/Kapat">
+          <span class="crt-icon">⚡</span> CRT
+        </button>
+
+        <!-- Command Palette Trigger -->
+        <button id="cmd-palette-btn" class="btn-palette-trigger" title="Komut Paletini Aç (Ctrl + K)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="btn-text">Komutlar</span>
+          <kbd class="kbd-shortcut">⌘K</kbd>
+        </button>
+
+        <a href="https://github.com/mtahiryilmazz" target="_blank" rel="noopener noreferrer" class="btn btn-icon" title="GitHub Profili">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span class="btn-text">GitHub</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-content">
+        <!-- Live Telemetry Status Pill -->
+        <div class="telemetry-bar" id="telemetry-bar">
+          <span class="pulse-indicator"></span>
+          <span class="telemetry-label">SYSTEM TELEMETRY:</span>
+          <span class="telemetry-text" id="telemetry-dynamic">yapair (C# AI Agent) & OxiDesk (Rust) build status: STABLE</span>
         </div>
 
-        <!-- Mobil Menü Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-gray-800 px-6 py-6 space-y-4">
-            <a href="#about" class="block text-gray-300 hover:text-cyber-cyan font-medium py-1 mobile-link">Hakkımda</a>
-            <a href="#skills" class="block text-gray-300 hover:text-cyber-cyan font-medium py-1 mobile-link">Uzmanlık Alanları</a>
-            <a href="#projects" class="block text-gray-300 hover:text-cyber-cyan font-medium py-1 mobile-link">Projeler</a>
-            <a href="#experience" class="block text-gray-300 hover:text-cyber-cyan font-medium py-1 mobile-link">Deneyim</a>
-            <a href="#contact" class="block text-center w-full py-3 rounded-xl bg-cyber-cyan text-cyber-950 font-bold mt-2 mobile-link">İletişime Geç</a>
+        <h1 class="hero-title">
+          Hızlı, Kararlı ve Güvenli <br>
+          <span class="text-gradient">Sistem Mimarileri.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Rust, C# .NET ve PowerShell ile düşük seviyeli Windows sistem optimizasyonları, 
+          uzak yönetim ekosistemleri ve yapay zeka destekli arıza tespit ajanları geliştiriyorum.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#projects" class="btn btn-primary">
+            Projeleri İncele
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <button id="hero-palette-btn" class="btn btn-secondary">
+            <span class="cmd-icon">>_</span> Komut Paleti (Ctrl + K)
+          </button>
         </div>
-    </header>
 
-    <main class="relative z-10 pt-20">
-
-        <!-- Hero Karşılama Alanı -->
-        <section id="hero" class="relative min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20 overflow-hidden">
-            <!-- Arka Plan Neon Efektleri -->
-            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyber-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute bottom-10 right-10 w-80 h-80 bg-cyber-purple/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Sol Metin Alanı -->
-                <div class="lg:col-span-7 space-y-6 text-left">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-800/80 border border-cyber-cyan/30 text-cyber-cyan text-xs code-font">
-                        <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
-                        SİSTEM DURUMU: AKTİF & ÇALIŞIYOR
-                    </div>
-                    
-                    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
-                        Merhaba, Ben <br>
-                        <span class="bg-gradient-to-r from-cyber-cyan via-blue-400 to-cyber-purple bg-clip-text text-transparent">Muhammed Tahir Yılmaz</span>
-                    </h1>
-
-                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-300">
-                        IT Uzmanı | Otomasyon & Yazılım Geliştirici
-                    </h2>
-                    
-                    <p class="text-base sm:text-lg text-gray-400 font-normal max-w-2xl leading-relaxed">
-                        Karmaşık iş süreçlerini, <strong class="text-white">Make (Integromat)</strong>, <strong class="text-white">Kommo CRM</strong>, <strong class="text-white">Unity</strong> ve modern yazılım mimarileri ile uçtan uca dijitalleştiren; kesintisiz altyapılar ve akıllı otomasyon sistemleri kuran bir teknoloji uzmanıyım.
-                    </p>
-
-                    <div class="flex flex-wrap gap-4 pt-4">
-                        <a href="#projects" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-blue text-cyber-950 font-bold hover:opacity-90 transition-all shadow-lg shadow-cyber-cyan/20 flex items-center gap-3">
-                            <span>Projelerimi İncele</span>
-                            <i class="fa-solid fa-arrow-right-long"></i>
-                        </a>
-                        <a href="#contact" class="px-8 py-4 rounded-xl glass-panel text-white hover:text-cyber-cyan font-semibold transition-all border border-gray-700 flex items-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i>
-                            <span>İletişime Geç</span>
-                        </a>
-                        <a href="https://github.com/mtahiryilmazz" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl glass-panel text-gray-300 hover:text-cyber-cyan transition-all border border-gray-700 flex items-center justify-center">
-                            <i class="fa-brands fa-github text-xl"></i>
-                        </a>
-                    </div>
-
-                    <!-- Teknoloji Rozetleri -->
-                    <div class="pt-8 border-t border-gray-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs code-font text-gray-400">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-gears text-cyber-cyan"></i>
-                            <span>Make / Integromat</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-users-gear text-cyber-purple"></i>
-                            <span>Kommo CRM</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-gamepad text-cyber-emerald"></i>
-                            <span>Unity & C#</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-infinity text-blue-400"></i>
-                            <span>CI/CD & DevOps</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sağ Terminal İnteraktif Görseli -->
-                <div class="lg:col-span-5">
-                    <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-cyber-cyan/20 animate-float">
-                        <div class="bg-cyber-900 px-4 py-3 border-b border-gray-800 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
-                                <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
-                                <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
-                            </div>
-                            <span class="text-xs code-font text-gray-400">mtahiryilmazz@core:~</span>
-                            <i class="fa-solid fa-terminal text-xs text-cyber-cyan"></i>
-                        </div>
-                        <div class="p-6 code-font text-xs sm:text-sm space-y-3 text-gray-300">
-                            <div class="text-gray-500">// Muhammed Tahir Yılmaz Sistem Bilgisi</div>
-                            <div><span class="text-cyber-cyan">$</span> whoami</div>
-                            <div class="text-white font-semibold">Muhammed Tahir Yılmaz [IT Expert & Automation Architect]</div>
-                            
-                            <div><span class="text-cyber-cyan">$</span> cat skills.json</div>
-                            <div class="pl-4 text-gray-400 text-xs bg-cyber-950/70 p-3 rounded-lg border border-gray-800 space-y-1">
-                                <div>{</div>
-                                <div class="pl-3">"uzmanlik": ["İş Akış Otomasyonu", "Sistem Güvenliği"],</div>
-                                <div class="pl-3">"otomasyon": ["Make.com", "Kommo CRM", "Webhooks"],</div>
-                                <div class="pl-3">"yazilim": ["Python", "JavaScript", "C#", "Unity"],</div>
-                                <div class="pl-3">"konum": "Türkiye / Hibrit"</div>
-                                <div>}</div>
-                            </div>
-
-                            <div><span class="text-cyber-cyan">$</span> systemctl status automated-workflows</div>
-                            <div class="text-cyber-emerald flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-cyber-emerald animate-ping"></span>
-                                <span>Active (running) - Efficiency: 100%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Hakkımda Bölümü -->
-        <section id="about" class="py-24 px-4 sm:px-6 lg:px-8 relative">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-                    <span class="text-cyber-cyan text-xs code-font uppercase tracking-widest px-3 py-1 rounded-md bg-cyber-cyan/10 border border-cyber-cyan/20">Profil & Vizyon</span>
-                    <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Hakkımda</h2>
-                    <p class="text-gray-400 text-base sm:text-lg">Teknoloji altyapısını güçlendiren, manuel süreçleri verimli iş akışlarına dönüştüren yaklaşım.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="glass-panel p-8 rounded-2xl relative group">
-                        <div class="w-14 h-14 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan text-2xl mb-6 group-hover:bg-cyber-cyan group-hover:text-cyber-950 transition-all duration-300">
-                            <i class="fa-solid fa-server"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 text-white">IT Altyapısı & Sistem Yönetimi</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">
-                            Kurumsal sistemlerin güvenliğini sağlama, kimlik doğrulama çözümleri (Passkey, 2FA) mimarisi ve kesintisiz ağ/sunucu altyapılarının yönetimi.
-                        </p>
-                    </div>
-
-                    <div class="glass-panel p-8 rounded-2xl relative group">
-                        <div class="w-14 h-14 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center text-cyber-purple text-2xl mb-6 group-hover:bg-cyber-purple group-hover:text-cyber-950 transition-all duration-300">
-                            <i class="fa-solid fa-diagram-next"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 text-white">İş Akışı & Otomasyon</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">
-                            Make (Integromat) ve Kommo CRM entegrasyonlarıyla müşteri ilişkileri yönetimi, sipariş takibi ve veri senkronizasyonunu tam otomatik hale getirme.
-                        </p>
-                    </div>
-
-                    <div class="glass-panel p-8 rounded-2xl relative group">
-                        <div class="w-14 h-14 rounded-xl bg-cyber-emerald/10 border border-cyber-emerald/30 flex items-center justify-center text-cyber-emerald text-2xl mb-6 group-hover:bg-cyber-emerald group-hover:text-cyber-950 transition-all duration-300">
-                            <i class="fa-solid fa-code"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 text-white">Yazılım & Dokümantasyon</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">
-                            Python, JS ve Unity/C# ile özel uygulama geliştirme; Scribe ve POEditor ile standart operasyon prosedürleri (SOP) ve çok dilli yerelleştirme.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Uzmanlık Alanları / Yetenekler -->
-        <section id="skills" class="py-24 px-4 sm:px-6 lg:px-8 bg-cyber-900/50 border-y border-gray-800/80">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-                    <span class="text-cyber-cyan text-xs code-font uppercase tracking-widest px-3 py-1 rounded-md bg-cyber-cyan/10 border border-cyber-cyan/20">Teknik Yetkinlikler</span>
-                    <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Uzmanlık Alanları</h2>
-                    <p class="text-gray-400 text-base sm:text-lg">Kullandığım teknolojiler, otomasyon araçları ve sistem yönetimi çözümleri.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    
-                    <!-- Kategori 1 -->
-                    <div class="glass-panel p-6 rounded-2xl space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-cyber-emerald/20 flex items-center justify-center text-cyber-emerald">
-                                <i class="fa-solid fa-code"></i>
-                            </div>
-                            <h3 class="text-lg font-bold">Yazılım & Geliştirme</h3>
-                        </div>
-                        <ul class="space-y-3 text-sm text-gray-300">
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>Python & Node.js</span>
-                                <span class="text-xs text-cyber-emerald code-font">İleri Düzey</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>JavaScript / HTML / CSS</span>
-                                <span class="text-xs text-cyber-emerald code-font">Uzman</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>C# & Unity Engine</span>
-                                <span class="text-xs text-cyber-emerald code-font">Orta - İleri</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Kategori 2 -->
-                    <div class="glass-panel p-6 rounded-2xl space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-cyber-cyan/20 flex items-center justify-center text-cyber-cyan">
-                                <i class="fa-solid fa-bolt"></i>
-                            </div>
-                            <h3 class="text-lg font-bold">İş Akış Otomasyonu</h3>
-                        </div>
-                        <ul class="space-y-3 text-sm text-gray-300">
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>Make / Integromat</span>
-                                <span class="text-xs text-cyber-cyan code-font">Usta</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>Kommo CRM Mimari</span>
-                                <span class="text-xs text-cyber-cyan code-font">Uzman</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>REST API & Webhooks</span>
-                                <span class="text-xs text-cyber-cyan code-font">Uzman</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Kategori 3 -->
-                    <div class="glass-panel p-6 rounded-2xl space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-cyber-purple/20 flex items-center justify-center text-cyber-purple">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <h3 class="text-lg font-bold">IT Altyapı & Güvenlik</h3>
-                        </div>
-                        <ul class="space-y-3 text-sm text-gray-300">
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>Passkey / Kimlik Doğrulama</span>
-                                <span class="text-xs text-cyber-purple code-font">Uzman</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>Sistem Güvenliği & Ağ</span>
-                                <span class="text-xs text-cyber-purple code-font">İleri Düzey</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>CI/CD & GitHub Actions</span>
-                                <span class="text-xs text-cyber-purple code-font">Uygulamalı</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Kategori 4 -->
-                    <div class="glass-panel p-6 rounded-2xl space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                <i class="fa-solid fa-file-contract"></i>
-                            </div>
-                            <h3 class="text-lg font-bold">Dokümantasyon</h3>
-                        </div>
-                        <ul class="space-y-3 text-sm text-gray-300">
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>Scribe & Süreç Tasarımı</span>
-                                <span class="text-xs text-blue-400 code-font">Uzman</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>POEditor / Yerelleştirme</span>
-                                <span class="text-xs text-blue-400 code-font">İleri Düzey</span>
-                            </li>
-                            <li class="flex items-center justify-between p-2.5 rounded-lg bg-cyber-950/60 border border-gray-800">
-                                <span>SOP & Teknik Rehberler</span>
-                                <span class="text-xs text-blue-400 code-font">Uzman</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- Projeler Bölümü -->
-        <section id="projects" class="py-24 px-4 sm:px-6 lg:px-8 relative">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-                    <div class="space-y-4">
-                        <span class="text-cyber-cyan text-xs code-font uppercase tracking-widest px-3 py-1 rounded-md bg-cyber-cyan/10 border border-cyber-cyan/20">Açık Kaynak & Projeler</span>
-                        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">GitHub Öne Çıkanlar</h2>
-                    </div>
-
-                    <!-- Filtreleme Tabları -->
-                    <div class="flex flex-wrap gap-2 p-1.5 rounded-xl bg-cyber-900 border border-gray-800 text-xs font-semibold code-font">
-                        <button onclick="filterProjects('all')" class="filter-btn active px-4 py-2 rounded-lg text-white bg-cyber-cyan/20 border border-cyber-cyan/30 transition-all" data-filter="all">Tümü</button>
-                        <button onclick="filterProjects('automation')" class="filter-btn px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-all" data-filter="automation">Otomasyon</button>
-                        <button onclick="filterProjects('software')" class="filter-btn px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-all" data-filter="software">Yazılım</button>
-                        <button onclick="filterProjects('it')" class="filter-btn px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-all" data-filter="it">IT / Sistem</button>
-                    </div>
-                </div>
-
-                <!-- Proje Kartları Grid -->
-                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <!-- Proje 1 -->
-                    <div class="project-card glass-panel rounded-2xl overflow-hidden flex flex-col justify-between group" data-category="automation">
-                        <div class="p-6 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan text-xl">
-                                    <i class="fa-solid fa-diagram-project"></i>
-                                </div>
-                                <span class="text-xs code-font px-2.5 py-1 rounded-full bg-cyber-800 text-cyber-cyan border border-cyber-cyan/20">Otomasyon</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-white group-hover:text-cyber-cyan transition-colors">Kommo CRM & Make Entegrasyonu</h3>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Webhook tetikleyicileri ile müşteri potansiyellerini otomatik sınıflandıran ve bildirim senkronizasyonu sağlayan uçtan uca CRM mimarisi.
-                            </p>
-                        </div>
-                        <div class="px-6 pb-6 pt-3 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
-                            <span class="code-font text-cyber-cyan">Make.com / Webhooks</span>
-                            <button onclick="openModal('Kommo CRM & Make Entegrasyonu', 'Webhook tetikleyicileri ile gelen müşteri verilerini anında işleyen, e-posta ve WhatsApp bildirimlerini tetikleyen Make senaryoları kümesi.', ['Make.com', 'Kommo CRM', 'Webhooks', 'REST API'], 'Otomasyon', 'https://github.com/mtahiryilmazz')" class="hover:text-white flex items-center gap-1 font-semibold text-cyber-cyan">
-                                Detaylar <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Proje 2 -->
-                    <div class="project-card glass-panel rounded-2xl overflow-hidden flex flex-col justify-between group" data-category="software">
-                        <div class="p-6 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-cyber-emerald/10 border border-cyber-emerald/30 flex items-center justify-center text-cyber-emerald text-xl">
-                                    <i class="fa-solid fa-gamepad"></i>
-                                </div>
-                                <span class="text-xs code-font px-2.5 py-1 rounded-full bg-cyber-800 text-cyber-emerald border border-cyber-emerald/20">Yazılım</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-white group-hover:text-cyber-emerald transition-colors">Unity C# Modüler Oyun Araçları</h3>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Oyun geliştirme süreçlerinde yeniden kullanılabilir mekanikler ve kullanıcı arayüzü kontrolcüleri sunan modüler C# kütüphaneleri.
-                            </p>
-                        </div>
-                        <div class="px-6 pb-6 pt-3 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
-                            <span class="code-font text-cyber-emerald">Unity / C#</span>
-                            <button onclick="openModal('Unity C# Modüler Oyun Araçları', 'Unity ortamında performans odaklı çalışan nesne havuzu (Object Pooling) ve UI yönetim betikleri.', ['Unity Engine', 'C#', 'GameDev'], 'Yazılım', 'https://github.com/mtahiryilmazz')" class="hover:text-white flex items-center gap-1 font-semibold text-cyber-emerald">
-                                Detaylar <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Proje 3 -->
-                    <div class="project-card glass-panel rounded-2xl overflow-hidden flex flex-col justify-between group" data-category="it">
-                        <div class="p-6 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center text-cyber-purple text-xl">
-                                    <i class="fa-solid fa-shield-cat"></i>
-                                </div>
-                                <span class="text-xs code-font px-2.5 py-1 rounded-full bg-cyber-800 text-cyber-purple border border-cyber-purple/20">IT / Sistem</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-white group-hover:text-cyber-purple transition-colors">Sistem Güvenliği & Passkey Altyapısı</h3>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Şifresiz güvenli oturum açma (Passkey) mimarisi ve kurumsal kimlik doğrulama katmanları entegrasyonu.
-                            </p>
-                        </div>
-                        <div class="px-6 pb-6 pt-3 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
-                            <span class="code-font text-cyber-purple">Security / Passkey</span>
-                            <button onclick="openModal('Sistem Güvenliği & Passkey Altyapısı', 'FIDO2 / WebAuthn standartları kullanılarak geliştirilen modern ve şifresiz kimlik doğrulama altyapı kurulum projeleri.', ['Passkey', 'Security', 'WebAuthn', '2FA'], 'IT / Sistem', 'https://github.com/mtahiryilmazz')" class="hover:text-white flex items-center gap-1 font-semibold text-cyber-purple">
-                                Detaylar <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Proje 4 -->
-                    <div class="project-card glass-panel rounded-2xl overflow-hidden flex flex-col justify-between group" data-category="software">
-                        <div class="p-6 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl">
-                                    <i class="fa-solid fa-globe"></i>
-                                </div>
-                                <span class="text-xs code-font px-2.5 py-1 rounded-full bg-cyber-800 text-blue-400 border border-blue-500/20">Yazılım</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">mtahiryilmazz.github.io Web Portfolyosu</h3>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                GitHub Pages üzerinde barındırılan, Tailwind CSS ve siber temalı glassmorphism tasarıma sahip kişisel web sitesi.
-                            </p>
-                        </div>
-                        <div class="px-6 pb-6 pt-3 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
-                            <span class="code-font text-blue-400">HTML / Tailwind</span>
-                            <button onclick="openModal('mtahiryilmazz.github.io Web Portfolyosu', 'GitHub Pages üzerinde tam uyumlu çalışan, modern karanlık mod ve responsive özellikli interaktif portfolyo.', ['HTML5', 'Tailwind CSS', 'JavaScript', 'GitHub Pages'], 'Yazılım', 'https://github.com/mtahiryilmazz/mtahiryilmazz.github.io')" class="hover:text-white flex items-center gap-1 font-semibold text-blue-400">
-                                Detaylar <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- Deneyim & Yetkinlikler Zaman Çizelgesi -->
-        <section id="experience" class="py-24 px-4 sm:px-6 lg:px-8 bg-cyber-900/50 border-y border-gray-800/80">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-                    <span class="text-cyber-cyan text-xs code-font uppercase tracking-widest px-3 py-1 rounded-md bg-cyber-cyan/10 border border-cyber-cyan/20">Kariyer & Yol Haritası</span>
-                    <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Deneyim & Yetkinlikler</h2>
-                </div>
-
-                <div class="space-y-8 relative before:absolute before:inset-0 before:left-7 before:w-0.5 before:bg-gradient-to-b before:from-cyber-cyan before:via-cyber-purple before:to-transparent">
-                    
-                    <!-- Zaman Çizelgesi 1 -->
-                    <div class="relative flex items-start gap-6 group">
-                        <div class="w-14 h-14 rounded-2xl bg-cyber-950 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan z-10 shadow-lg shadow-cyber-cyan/10 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-gears"></i>
-                        </div>
-                        <div class="glass-panel p-6 rounded-2xl flex-1 space-y-3">
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="text-xl font-bold text-white">Otomasyon & IT Sistem Mimarı</h3>
-                                <span class="text-xs code-font px-3 py-1 rounded-full bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20">Aktif</span>
-                            </div>
-                            <p class="text-sm text-cyber-purple font-medium">Bağımsız / Danışmanlık Hizmetleri</p>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Kurumsal firmalara Make.com ve Kommo CRM entegrasyonları kurarak veri akışını otomatikleştirme; sunucu ve ağ güvenliği çözümleri sunma.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Zaman Çizelgesi 2 -->
-                    <div class="relative flex items-start gap-6 group">
-                        <div class="w-14 h-14 rounded-2xl bg-cyber-950 border border-cyber-purple/40 flex items-center justify-center text-cyber-purple z-10 shadow-lg group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-laptop-code"></i>
-                        </div>
-                        <div class="glass-panel p-6 rounded-2xl flex-1 space-y-3">
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="text-xl font-bold text-white">Yazılım & Oyun Geliştirme</h3>
-                                <span class="text-xs code-font px-3 py-1 rounded-full bg-cyber-purple/10 text-cyber-purple border border-cyber-purple/20">Sürekli Gelişim</span>
-                            </div>
-                            <p class="text-sm text-cyber-cyan font-medium">Unity Engine & C# Projeleri</p>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Oyun mekanikleri, nesne yönelimli C# mimarileri ve interaktif simülasyon projeleri geliştirme; modüler yapı tasarımı.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Zaman Çizelgesi 3 -->
-                    <div class="relative flex items-start gap-6 group">
-                        <div class="w-14 h-14 rounded-2xl bg-cyber-950 border border-cyber-emerald/40 flex items-center justify-center text-cyber-emerald z-10 shadow-lg group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-file-signature"></i>
-                        </div>
-                        <div class="glass-panel p-6 rounded-2xl flex-1 space-y-3">
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="text-xl font-bold text-white">Süreç Dokümantasyonu & L10n</h3>
-                                <span class="text-xs code-font px-3 py-1 rounded-full bg-cyber-emerald/10 text-cyber-emerald border border-cyber-emerald/20">Kurumsal Sertifikasyon</span>
-                            </div>
-                            <p class="text-sm text-cyber-emerald font-medium">Scribe & POEditor Uzmanlığı</p>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Karmaşık teknolojik süreçlerin adım adım Scribe ile belgelenmesi, POEditor ile çok dilli yazılım yerelleştirme yönetimi.
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- İletişim Bölümü -->
-        <section id="contact" class="py-24 px-4 sm:px-6 lg:px-8 relative">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                    
-                    <!-- Sol Bilgi Sütunu -->
-                    <div class="lg:col-span-5 space-y-6">
-                        <span class="text-cyber-cyan text-xs code-font uppercase tracking-widest px-3 py-1 rounded-md bg-cyber-cyan/10 border border-cyber-cyan/20">Doğrudan İletişim</span>
-                        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Projenizi Birlikte Hayata Geçirelim</h2>
-                        <p class="text-gray-400 text-base leading-relaxed">
-                            İş akışlarınızı otomatikleştirmek, IT altyapınızı güçlendirmek veya özel yazılım çözümleri geliştirmek için bana hemen ulaşabilirsiniz.
-                        </p>
-
-                        <div class="space-y-4 pt-4">
-                            <a href="https://github.com/mtahiryilmazz" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 glass-panel p-4 rounded-xl hover:border-cyber-cyan transition-all group">
-                                <div class="w-12 h-12 rounded-lg bg-cyber-cyan/10 text-cyber-cyan flex items-center justify-center text-xl group-hover:bg-cyber-cyan group-hover:text-cyber-950 transition-colors">
-                                    <i class="fa-brands fa-github"></i>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-gray-400 code-font">GITHUB PROFİLİ</div>
-                                    <div class="text-white font-semibold">github.com/mtahiryilmazz</div>
-                                </div>
-                            </a>
-
-                            <div class="flex items-center gap-4 glass-panel p-4 rounded-xl">
-                                <div class="w-12 h-12 rounded-lg bg-cyber-purple/10 text-cyber-purple flex items-center justify-center text-xl">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-gray-400 code-font">KONUM</div>
-                                    <div class="text-white font-semibold">Türkiye (Uzaktan / Remote Uyumlu)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sağ İletişim Formu -->
-                    <div class="lg:col-span-7">
-                        <div class="glass-panel p-8 sm:p-10 rounded-2xl border border-cyber-cyan/20 shadow-2xl">
-                            <h3 class="text-2xl font-bold mb-6 text-white">Mesaj Gönderin</h3>
-                            <form id="contact-form" class="space-y-6" onsubmit="handleContactSubmit(event)">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <div class="space-y-2">
-                                        <label class="text-xs code-font text-gray-300 uppercase">Adınız Soyadınız</label>
-                                        <input type="text" id="sender-name" required placeholder="Ahmet Yılmaz" class="w-full bg-cyber-950/80 border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:border-cyber-cyan transition-colors">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-xs code-font text-gray-300 uppercase">E-Posta Adresiniz</label>
-                                        <input type="email" id="sender-email" required placeholder="ahmet@ornek.com" class="w-full bg-cyber-950/80 border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:border-cyber-cyan transition-colors">
-                                    </div>
-                                </div>
-
-                                <div class="space-y-2">
-                                    <label class="text-xs code-font text-gray-300 uppercase">Konu</label>
-                                    <input type="text" id="sender-subject" required placeholder="Otomasyon & CRM Projesi" class="w-full bg-cyber-950/80 border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:border-cyber-cyan transition-colors">
-                                </div>
-
-                                <div class="space-y-2">
-                                    <label class="text-xs code-font text-gray-300 uppercase">Mesajınız</label>
-                                    <textarea id="sender-message" rows="4" required placeholder="Proje gereksinimlerinizden bahsedin..." class="w-full bg-cyber-950/80 border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:border-cyber-cyan transition-colors"></textarea>
-                                </div>
-
-                                <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyber-cyan via-cyber-blue to-cyber-purple text-cyber-950 font-extrabold hover:opacity-90 transition-all shadow-lg shadow-cyber-cyan/20 flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                    <span>Mesajı İlet</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Alt Bilgi / Footer -->
-    <footer class="glass-panel border-t border-gray-800 py-12 px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-cyber-cyan text-cyber-950 font-bold flex items-center justify-center text-sm">
-                    MTY
-                </div>
-                <span class="text-sm font-semibold text-gray-300">&copy; 2026 Muhammed Tahir Yılmaz - Tüm Hakları Saklıdır</span>
-            </div>
-
-            <div class="flex items-center gap-6 text-gray-400">
-                <a href="https://github.com/mtahiryilmazz" target="_blank" rel="noopener noreferrer" class="hover:text-cyber-cyan text-lg transition-colors"><i class="fa-brands fa-github"></i></a>
-                <a href="https://github.com/mtahiryilmazz/mtahiryilmazz.github.io" target="_blank" rel="noopener noreferrer" class="hover:text-cyber-cyan text-lg transition-colors"><i class="fa-solid fa-code-branch"></i></a>
-            </div>
-
-            <div class="text-xs code-font text-gray-500">
-                GitHub Pages Portfolyosu
-            </div>
+        <!-- Quick Metrics -->
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <span class="metric-value">0ms</span>
+            <span class="metric-label">Gereksiz Katman</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-value">Rust & C#</span>
+            <span class="metric-label">Native Çekirdek</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-value">Win32 API</span>
+            <span class="metric-label">Derin Entegrasyon</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-value">100%</span>
+            <span class="metric-label">Açık Kaynak</span>
+          </div>
         </div>
-    </footer>
+      </div>
+    </section>
 
-    <!-- JavaScript İnteraktif Mantık -->
-    <script>
-        // Mobil Menü
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
+    <!-- About Section -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 01. Profil</div>
+          <h2 class="section-title">Performans ve Sistem Sağlamlığı Odaklı</h2>
+        </div>
 
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        <div class="about-grid">
+          <div class="about-card terminal-card">
+            <div class="card-header-bar">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="card-title-text">engineer_manifest.json</span>
+              <button class="copy-card-btn" data-copy='{"name":"M. Tahir Yılmaz","role":"Systems Engineer","specialties":["Windows Internals","Rust","C# .NET yapair","PowerShell pwxe"]}' title="JSON Kopyala">Kopyala</button>
+            </div>
+            <pre class="code-block"><code>{
+  <span class="key">"name"</span>: <span class="str">"M. Tahir Yılmaz"</span>,
+  <span class="key">"role"</span>: <span class="str">"Systems Engineer & IT Automation Specialist"</span>,
+  <span class="key">"specialties"</span>: [
+    <span class="str">"Windows Internals & Win32 API"</span>,
+    <span class="str">"Rust Systems Engineering"</span>,
+    <span class="str">"C# .NET AI Diagnostics (yapair)"</span>,
+    <span class="str">"PowerShell Engine & Exe Packaging (pwxe)"</span>
+  ],
+  <span class="key">"philosophy"</span>: <span class="str">"Yüksek hız, sıfır bloatware, kanıtlanmış güvenilirlik."</span>
+}</code></pre>
+          </div>
 
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-
-        // Toast Bildirim Sistemi
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
+          <div class="about-narrative">
+            <p>
+              Geliştirdiğim çözümler; kurumsal BT operasyonları, Windows derin sistem onarımları ve bağımsız çalışabilen optimize araçlar üzerine kuruludur.
+            </p>
+            <p>
+              İster <strong>Rust</strong> ile sıfır maliyetli bellek yönetimiyle yazılmış bir uzak yönetim sistemi (OxiDesk), 
+              isterse <strong>C# .NET</strong> üzerinde çalışan proaktif bir yapay zeka arıza teşhis ajanı (yapair) olsun; 
+              hedefim her zaman minimum sistem yüküyle maksimum sonuç almaktır.
+            </p>
             
-            const bgColor = type === 'success' ? 'bg-cyber-900 border-cyber-cyan text-white' : 'bg-red-950 border-red-500 text-white';
-            const icon = type === 'success' ? 'fa-circle-check text-cyber-cyan' : 'fa-circle-exclamation text-red-400';
+            <div class="highlight-boxes">
+              <div class="h-box">
+                <span class="h-title">Yerel Hız</span>
+                <span class="h-desc">Hafif, bağımsız derlenen native binary'ler.</span>
+              </div>
+              <div class="h-box">
+                <span class="h-title">Otomasyon</span>
+                <span class="h-desc">Tek tıkla karmaşık IT problemlerini çözen betikler.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            toast.className = `pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-xl border shadow-2xl transition-all duration-300 transform translate-y-5 opacity-0 ${bgColor}`;
-            toast.innerHTML = `
-                <i class="fa-solid ${icon} text-lg"></i>
-                <div class="text-sm font-medium">${message}</div>
-            `;
+    <!-- Featured Projects Section with One-Click Copy -->
+    <section class="section projects-section" id="projects">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 02. Seçilmiş Projeler</div>
+          <h2 class="section-title">Açık Kaynak Sistem & Teşhis Çözümleri</h2>
+          <p class="section-desc">GitHub üzerindeki aktif depolar ve mühendislik çalışmaları. Tek tıkla klonlayın veya inceleyin.</p>
+        </div>
 
-            container.appendChild(toast);
+        <div class="bento-grid">
+          <!-- yapair (Featured Large) -->
+          <article class="bento-item bento-large project-card">
+            <div class="project-badge ai-badge">AI + Diagnostics</div>
+            <div class="project-meta">
+              <span class="lang-tag lang-csharp">C# .NET</span>
+              <span class="meta-tag">AI Agent</span>
+              <span class="meta-tag">Windows</span>
+            </div>
+            <h3 class="project-name">yapair</h3>
+            <p class="project-summary">
+              AI-powered Windows diagnostics, repair and verification agent. 
+              Windows sistemlerindeki servis kilitlenmelerini, registry bozulmalarını ve ağ arızalarını otomatik teşhis edip doğrulayan akıllı ajan mimarisi.
+            </p>
 
-            setTimeout(() => {
-                toast.classList.remove('translate-y-5', 'opacity-0');
-            }, 10);
+            <div class="project-cmd-bar">
+              <span class="cmd-label">Clone:</span>
+              <code class="cmd-snippet">git clone https://github.com/mtahiryilmazz/yapair.git</code>
+              <button class="copy-chip-btn" data-copy="git clone https://github.com/mtahiryilmazz/yapair.git" title="Komutu Kopyala">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
 
-            setTimeout(() => {
-                toast.classList.add('translate-y-5', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
+            <div class="project-features">
+              <span>✓ Read-only Sprint güvenli mod</span>
+              <span>✓ Gerçek zamanlı olay günlüğü analizi</span>
+              <span>✓ Doğrulanabilir onarım adımları</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/mtahiryilmazz/yapair" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+                Depoyu İncele
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+              </a>
+              <button class="btn btn-sm btn-action trigger-cmd" data-run="yapair --diagnose">
+                Terminalde Simüle Et
+              </button>
+            </div>
+          </article>
 
-        // İletişim Form Gönderimi
-        function handleContactSubmit(event) {
-            event.preventDefault();
-            const name = document.getElementById('sender-name').value;
-            const email = document.getElementById('sender-email').value;
-            const message = document.getElementById('sender-message').value;
+          <!-- OxiDesk (Featured) -->
+          <article class="bento-item project-card">
+            <div class="project-badge rust-badge">Rust Ecosystem</div>
+            <div class="project-meta">
+              <span class="lang-tag lang-rust">Rust</span>
+              <span class="meta-tag">Fluent UI</span>
+            </div>
+            <h3 class="project-name">OxiDesk</h3>
+            <p class="project-summary">
+              Windows Fluent IT Uzak Masaüstü ve Cihaz Yönetim Ekosistemi. Güvenli soket haberleşmesi ve düşük gecikmeli görüntü aktarımı.
+            </p>
 
-            if (!name || !email || !message) {
-                showToast('Lütfen tüm gerekli alanları doldurun.', 'error');
-                return;
-            }
+            <div class="project-cmd-bar">
+              <span class="cmd-label">Clone:</span>
+              <code class="cmd-snippet">git clone https://github.com/mtahiryilmazz/OxiDesk.git</code>
+              <button class="copy-chip-btn" data-copy="git clone https://github.com/mtahiryilmazz/OxiDesk.git" title="Komutu Kopyala">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
 
-            showToast(`Teşekkürler ${name}! Mesajınız başarıyla iletildi, en kısa sürede dönüş yapılacaktır.`, 'success');
-            document.getElementById('contact-form').reset();
-        }
+            <div class="project-links">
+              <a href="https://github.com/mtahiryilmazz/OxiDesk" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+                GitHub <span>↗</span>
+              </a>
+              <button class="btn btn-sm btn-action trigger-cmd" data-run="oxidesk status">
+                Durum Kontrolü
+              </button>
+            </div>
+          </article>
 
-        // Proje Filtreleme
-        function filterProjects(category) {
-            const cards = document.querySelectorAll('.project-card');
-            const buttons = document.querySelectorAll('.filter-btn');
+          <!-- pwxe & PwX-Studio -->
+          <article class="bento-item project-card">
+            <div class="project-badge ps-badge">CLI & Compiler</div>
+            <div class="project-meta">
+              <span class="lang-tag lang-ps">PowerShell</span>
+              <span class="meta-tag">CLI</span>
+            </div>
+            <h3 class="project-name">pwxe & PwX-Studio</h3>
+            <p class="project-summary">
+              Ultra hızlı, bağımsız PowerShell to EXE derleme motoru ve modern Windows GUI studio paketi. Kod obfuscation ve gömülü kaynak desteği.
+            </p>
 
-            buttons.forEach(btn => {
-                if (btn.getAttribute('data-filter') === category) {
-                    btn.classList.add('active', 'text-white', 'bg-cyber-cyan/20', 'border', 'border-cyber-cyan/30');
-                    btn.classList.remove('text-gray-400');
-                } else {
-                    btn.classList.remove('active', 'text-white', 'bg-cyber-cyan/20', 'border', 'border-cyber-cyan/30');
-                    btn.classList.add('text-gray-400');
-                }
-            });
+            <div class="project-cmd-bar">
+              <span class="cmd-label">Module:</span>
+              <code class="cmd-snippet">Install-Module pwxe -Scope CurrentUser</code>
+              <button class="copy-chip-btn" data-copy="Install-Module pwxe -Scope CurrentUser" title="Komutu Kopyala">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
 
-            cards.forEach(card => {
-                if (category === 'all' || card.getAttribute('data-category') === category) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
+            <div class="project-links">
+              <a href="https://github.com/mtahiryilmazz/pwxe" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+                pwxe CLI <span>↗</span>
+              </a>
+              <a href="https://github.com/mtahiryilmazz/PwX-Studio" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+                Studio GUI <span>↗</span>
+              </a>
+            </div>
+          </article>
 
-        // Proje Detay Modal Mantığı
-        const modal = document.getElementById('project-modal');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const closeModalBottom = document.getElementById('modal-close-bottom');
+          <!-- winraze -->
+          <article class="bento-item project-card">
+            <div class="project-badge rust-badge">Rust Tool</div>
+            <div class="project-meta">
+              <span class="lang-tag lang-rust">Rust</span>
+              <span class="meta-tag">Windows Internals</span>
+            </div>
+            <h3 class="project-name">winraze</h3>
+            <p class="project-summary">
+              Windows derin dosya ve artık temizleme, sistem kaynak optimizasyon motoru. Bellek güvenliği ile yüksek hızlı I/O işlemleri.
+            </p>
 
-        function openModal(title, desc, tags, category, link) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-desc').textContent = desc;
-            document.getElementById('modal-badge').textContent = category;
-            document.getElementById('modal-github-link').href = link;
+            <div class="project-cmd-bar">
+              <span class="cmd-label">Build:</span>
+              <code class="cmd-snippet">cargo build --release --bin winraze</code>
+              <button class="copy-chip-btn" data-copy="cargo build --release --bin winraze" title="Komutu Kopyala">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
 
-            const tagsContainer = document.getElementById('modal-tags');
-            tagsContainer.innerHTML = '';
-            tags.forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'px-3 py-1 rounded-md bg-cyber-950 border border-gray-800 text-xs code-font text-cyber-cyan';
-                span.textContent = tag;
-                tagsContainer.appendChild(span);
-            });
+            <div class="project-links">
+              <a href="https://github.com/mtahiryilmazz/winraze" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+                GitHub <span>↗</span>
+              </a>
+              <button class="btn btn-sm btn-action trigger-cmd" data-run="winraze scan">
+                Simüle Tara
+              </button>
+            </div>
+          </article>
 
-            modal.classList.remove('hidden');
-        }
+          <!-- SysForge-Studio -->
+          <article class="bento-item project-card">
+            <div class="project-badge py-badge">Admin Suite</div>
+            <div class="project-meta">
+              <span class="lang-tag lang-py">Python</span>
+              <span class="meta-tag">Automation</span>
+            </div>
+            <h3 class="project-name">SysForge-Studio</h3>
+            <p class="project-summary">
+              Kurumsal BT ve sistem operasyonları için kapsamlı yönetim araç takımı. Kayıt defteri, ağ yapılandırmaları ve toplu bakım modülleri.
+            </p>
 
-        closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-        closeModalBottom.addEventListener('click', () => modal.classList.add('hidden'));
+            <div class="project-cmd-bar">
+              <span class="cmd-label">Clone:</span>
+              <code class="cmd-snippet">git clone https://github.com/mtahiryilmazz/SysForge-Studio.git</code>
+              <button class="copy-chip-btn" data-copy="git clone https://github.com/mtahiryilmazz/SysForge-Studio.git" title="Komutu Kopyala">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
 
-        // Modal dışına tıklandığında kapatma
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-    </script>
+            <div class="project-links">
+              <a href="https://github.com/mtahiryilmazz/SysForge-Studio" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+                GitHub <span>↗</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW SECTION: Engineering Benchmarks & Systems Telemetry -->
+    <section class="section benchmarks-section" id="benchmarks">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 03. Performans & Metrikler</div>
+          <h2 class="section-title">Native Çekirdek vs. Standart Çözümler</h2>
+          <p class="section-desc">Rust ve optimize C# sistem araçlarının bellek ve hız karşılaştırması.</p>
+        </div>
+
+        <div class="benchmarks-grid">
+          <!-- Metric 1: Memory Footprint -->
+          <div class="benchmark-card">
+            <div class="b-header">
+              <span class="b-title">RAM Tüketimi (Uzak Yönetim)</span>
+              <span class="b-win-tag">18x Daha Hafif</span>
+            </div>
+            <div class="b-bars">
+              <div class="b-bar-group">
+                <div class="b-label-row">
+                  <span>OxiDesk (Rust Core)</span>
+                  <strong class="highlight-val">8.2 MB</strong>
+                </div>
+                <div class="progress-track"><div class="progress-fill green" style="width: 8%;"></div></div>
+              </div>
+              <div class="b-bar-group">
+                <div class="b-label-row">
+                  <span>Elektron / WebRTC Tabanlı Araçlar</span>
+                  <span>146.0 MB</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill muted" style="width: 95%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 2: Cold Start Execution -->
+          <div class="benchmark-card">
+            <div class="b-header">
+              <span class="b-title">CLI Soğuk Başlatma (Cold Start)</span>
+              <span class="b-win-tag">28x Daha Hızlı</span>
+            </div>
+            <div class="b-bars">
+              <div class="b-bar-group">
+                <div class="b-label-row">
+                  <span>pwxe Derlenmiş PE Binary</span>
+                  <strong class="highlight-val">12 ms</strong>
+                </div>
+                <div class="progress-track"><div class="progress-fill cyan" style="width: 5%;"></div></div>
+              </div>
+              <div class="b-bar-group">
+                <div class="b-label-row">
+                  <span>Geleneksel Wrapper / Yorumlayıcı</span>
+                  <span>340 ms</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill muted" style="width: 85%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 3: Diagnostic Reliability -->
+          <div class="benchmark-card">
+            <div class="b-header">
+              <span class="b-title">Arıza Teşhis Doğrulaması</span>
+              <span class="b-win-tag">%100 Deterministik</span>
+            </div>
+            <div class="b-bars">
+              <div class="b-bar-group">
+                <div class="b-label-row">
+                  <span>yapair (Read-Only Sprint Modu)</span>
+                  <strong class="highlight-val">%100 Güvenli Teşhis</strong>
+                </div>
+                <div class="progress-track"><div class="progress-fill purple" style="width: 100%;"></div></div>
+              </div>
+              <div class="b-bar-group">
+                <div class="b-label-row">
+                  <span>Manuel IT Müdahalesi (Hata Riski)</span>
+                  <span>Kayıt defteri riskli</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill muted" style="width: 45%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Terminal Demo Section -->
+    <section class="section terminal-section" id="terminal">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 04. Canlı Simülasyon</div>
+          <h2 class="section-title">İnteraktif CLI & Sistem Teşhisi</h2>
+          <p class="section-desc">Geliştirilen araçların terminal deneyimini doğrudan tarayıcınızda test edin.</p>
+        </div>
+
+        <div class="interactive-terminal-wrapper">
+          <div class="terminal-window">
+            <div class="terminal-titlebar">
+              <div class="window-controls">
+                <span class="control-btn close"></span>
+                <span class="control-btn min"></span>
+                <span class="control-btn max"></span>
+              </div>
+              <div class="window-title">PwX & Yapair Environment (v2.4.0-preview)</div>
+              <div class="window-actions">
+                <button id="clear-term-btn" class="term-action-btn">Temizle</button>
+              </div>
+            </div>
+
+            <div class="terminal-body" id="terminal-output">
+              <div class="term-line welcome-msg">
+                <span class="prompt-accent">SysArch CLI [Version 2.4.0]</span><br>
+                (c) M. Tahir Yılmaz. Denemek için komutları tıklayın veya doğrudan yazın:
+              </div>
+              <div class="quick-commands">
+                <button class="cmd-chip" data-cmd="yapair --diagnose">yapair --diagnose</button>
+                <button class="cmd-chip" data-cmd="pwxe build --script ./deploy.ps1">pwxe build</button>
+                <button class="cmd-chip" data-cmd="oxidesk status">oxidesk status</button>
+                <button class="cmd-chip" data-cmd="winraze scan">winraze scan</button>
+                <button class="cmd-chip" data-cmd="help">help</button>
+              </div>
+            </div>
+
+            <div class="terminal-input-row">
+              <span class="term-prompt">user@mty-sys:~$</span>
+              <input type="text" id="terminal-input" placeholder="Bir komut yazın (örn: help, yapair, pwxe)..." autocomplete="off" spellcheck="false">
+              <button id="run-cmd-btn" class="btn-run">Çalıştır</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="section stack-section" id="stack">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 05. Teknoloji Matrisi</div>
+          <h2 class="section-title">Kullanılan Sistem & Araç Yığını</h2>
+        </div>
+
+        <div class="stack-grid">
+          <div class="stack-category">
+            <div class="cat-header">
+              <span class="cat-icon">⚡</span>
+              <h3>Sistem & Çekirdek</h3>
+            </div>
+            <ul class="cat-list">
+              <li><strong>Rust</strong> (Bellek güvenliği, native CLI & I/O)</li>
+              <li><strong>C# / .NET 9</strong> (Async agents, background services)</li>
+              <li><strong>Win32 API</strong> (Process, memory & registry hooks)</li>
+            </ul>
+          </div>
+
+          <div class="stack-category">
+            <div class="cat-header">
+              <span class="cat-icon">🛠️</span>
+              <h3>Otomasyon & IT</h3>
+            </div>
+            <ul class="cat-list">
+              <li><strong>PowerShell 7+</strong> (Script derleme, WMI/CIM yönetimi)</li>
+              <li><strong>Python</strong> (Analiz & veri boru hatları)</li>
+              <li><strong>Group Policy & Registry</strong> (Windows hardening)</li>
+            </ul>
+          </div>
+
+          <div class="stack-category">
+            <div class="cat-header">
+              <span class="cat-icon">🤖</span>
+              <h3>Yapay Zeka & Dağıtım</h3>
+            </div>
+            <ul class="cat-list">
+              <li><strong>AI Diagnostics</strong> (Olay günlüğü hata korelasyonu)</li>
+              <li><strong>Git & GitHub Actions</strong> (CI/CD, automated release)</li>
+              <li><strong>Fluent UI & Web Standards</strong> (Modern arayüzler)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact & Footer -->
+    <footer class="site-footer" id="contact">
+      <div class="container footer-container">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <span class="brand-logo">[MTY]</span>
+            <p class="footer-tagline">
+              Modern sistem mimarileri, güvenli Windows otomasyonları ve açık kaynak IT ekosistemi.
+            </p>
+          </div>
+
+          <div class="footer-links-group">
+            <h4>Bağlantılar</h4>
+            <ul>
+              <li><a href="https://github.com/mtahiryilmazz" target="_blank" rel="noopener">GitHub Profili</a></li>
+              <li><a href="https://gist.github.com/mtahiryilmazz" target="_blank" rel="noopener">Gist Rehberleri</a></li>
+              <li><a href="https://github.com/mtahiryilmazz/yapair" target="_blank" rel="noopener">yapair Projesi</a></li>
+              <li><a href="https://github.com/mtahiryilmazz/OxiDesk" target="_blank" rel="noopener">OxiDesk Ekosistemi</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="copyright">
+            © 2026 M. Tahir Yılmaz. MIT Lisansı ile yayınlanmıştır.
+          </div>
+          <div class="crafted-by">
+            Built with Taste, GSAP & Three.js • Klavye kısayolları: <kbd>⌘K</kbd> Komutlar
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Application Logic -->
+  <script src="three-scene.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
